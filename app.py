@@ -14,9 +14,12 @@ db_curser .execute("CREATE TABLE IF NOT EXISTS USERS(EMAIL TEXT , PASSWORD TEXT,
 login = 0
 signup =0
 user_cart_id = tuple()
-with open("cart.json") as f:
+try:
+    with open("cart.json") as f:
         cart = json.load(f)
-
+except Exception as e:
+    with open("cart.json","w") as f:
+        json.dump(dict(), f)
 cartid=None
 
 # initialize the app with the extension
