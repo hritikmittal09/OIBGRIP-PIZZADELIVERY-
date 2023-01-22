@@ -95,7 +95,11 @@ def history ():
     else:
         return "login first"
  
-
+@app.route("/logout")
+def logout():
+    global signup,login
+    signup,login =0,0
+    return "YOU ARE LOGGED OUT"
         
 
 
