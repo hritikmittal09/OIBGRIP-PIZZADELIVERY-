@@ -37,6 +37,7 @@ def homepage():
     global  db_curser
     global user_cart_id
     global cartid
+    global cart
     global user_password_save_in_db
     message = "WELCOME"
 
