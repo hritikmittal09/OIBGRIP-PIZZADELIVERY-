@@ -20,6 +20,8 @@ try:
 except Exception as e:
     with open("cart.json","w") as f:
         json.dump(dict(), f)
+    with open("cart.json") as f:
+        cart = json.load(f)    
 cartid=None
 user_password_save_in_db =None
 
@@ -110,6 +112,9 @@ def history ():
 def logout():
     global signup,login
     signup,login =0,0
+    global cartid ,user_password_save_in_db
+    cartid =None
+    user_password_save_in_db =None
     return "YOU ARE LOGGED OUT"
         
 
