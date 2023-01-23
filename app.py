@@ -21,6 +21,7 @@ except Exception as e:
     with open("cart.json","w") as f:
         json.dump(dict(), f)
 cartid=None
+user_password_save_in_db =None
 
 # initialize the app with the extension
 
@@ -34,33 +35,43 @@ def homepage():
     global  db_curser
     global user_cart_id
     global cartid
-    
+    global user_password_save_in_db
+    message = "WELCOME"
 
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
         
-        user_cart_id =tuple ( connctin_to_db.execute(f"SELECT cart_id FROM USERS WHERE EMAIL = '{email}'"))
+        user_info =list ( connctin_to_db.execute(f"SELECT cart_id,PASSWORD FROM USERS WHERE EMAIL = '{email}'"))
         
-        for i in user_cart_id:
-            for j in i:
-                cartid =str(j)
+        for i in user_info:
+            cartid = i[0]
+            user_password_save_in_db =i[1]
                
-        if cartid !=None:
+        if cartid !=None and user_password_save_in_db == password:
+            message = f"WELCOME {email}"
             if cartid in cart:
                 mycart = cart[cartid]
                 global login,signup
                 login =1
                 signup =1
-        else:
+        elif cartid != None and user_password_save_in_db !=password:
+            return "wrong email or password"
+        
+        elif cartid == None and user_password_save_in_db ==None:
+            message ="WELCOME YOU ARE NOW SIGNED UP AS A NEW USER NOW YOU HAVE TO LOGIN AGAIN "
             new_card_id = str(uuid.uuid1())
+
             db_curser.execute("insert into users values(?,?,?)",(email,password,new_card_id))
             cart[new_card_id] = []
             with open("cart.json","w") as f:
                 json.dump(cart,f)
 
             connctin_to_db.commit()
-    return render_template("index.html")
+
+    return render_template("index.html",message =message)
+
+
 @app.route("/pizzaDetails/<slug>")
 def pizza_details(slug):
     if signup==1 and login ==1:
@@ -107,4 +118,4 @@ def logout():
 
     
 
-app.run()
+app.run(debug=True)
